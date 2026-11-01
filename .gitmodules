@@ -1,0 +1,3 @@
+[submodule "FineNav-Engine"]
+	path = FineNav-Engine
+	url = https://github.com/FineNav/FineNav-Engine.git
