@@ -53,7 +53,7 @@ void setRobotparam(){
 
   //前面两个电机速度控制方向
   motorStatus.M3Dir = 1;//左前电机控制方向
-  motorStatus.M4Dir = 1;//右前电机控制方向
+  motorStatus.M4Dir = -1;//右前电机控制方向
 }
 
 SF_Servo servos = SF_Servo(Wire); // 实例化舵机
@@ -87,7 +87,7 @@ float height = 120;
 float right_front = 70, right_rear = 70, left_front = 70, left_rear = 70;
 float x1 = 0, x2 = 0, x3 = 0, x4 = 0, Y1 = right_front, y2 = left_front, y3 = right_rear, y4 = left_rear;
 int r1 = -1, r2 = -1, r3 = 1, r4 = 1;
-float faai = 0.5, Ts = 1;
+float faai = 0.5, Ts = 1.0;
 // float xf = -45, xs = 45, h = 60;
 float left_front_h = 60, left_rear_h = 60, right_front_h = 60, right_rear_h = 60;
 float xf = 0, xs = 0, h = 60;
@@ -171,14 +171,14 @@ void trot()
     else if (controlmode == 0)
     {
       //双足步态
-      //固定值+遥控器前后和轮速反馈+遥控器左右+遥控器陀螺仪保持水平
-      Y1 = left_front_h + 50 + forwardBackward_h/2 + steering + steadyState * -target_pitch + 1 * remote_H + roll_EH + steadyState * target_roll;
+      //固定值+遥控器前后和轮速反馈+遥控器陀螺仪保持水平
+      Y1 = left_front_h + 50 + forwardBackward_h/2 + steadyState * -target_pitch + 1 * remote_H + roll_EH + steadyState * target_roll;
       Y1 = constrainValue(Y1, 70, 150);
-      y2 = right_front_h + 50 + forwardBackward_h/2 - steering + steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
+      y2 = right_front_h + 50 + forwardBackward_h/2 + steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
       y2 = constrainValue(y2, 70, 150);
-      y3 = right_rear_h + 50 - forwardBackward_h/2 + steering - steadyState * -target_pitch + 1 * remote_H + roll_EH +  steadyState * target_roll;
+      y3 = right_rear_h + 50 - forwardBackward_h/2 - steadyState * -target_pitch + 1 * remote_H + roll_EH +  steadyState * target_roll;
       y3 = constrainValue(y3, 70, 150);
-      y4 = left_rear_h + 50 - forwardBackward_h/2 - steering - steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
+      y4 = left_rear_h + 50 - forwardBackward_h/2 - steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
       y4 = constrainValue(y4, 70, 150);
     }
 
@@ -221,15 +221,15 @@ void trot()
 
     else if (controlmode == 0)
     {
-      //双足步态
+      //双足步态F
       //固定值+遥控器前后和轮速反馈
-      Y1 = left_front_h + 50 + forwardBackward_h/2 + steering + steadyState * -target_pitch + 1 * remote_H + roll_EH + steadyState * target_roll;
+      Y1 = left_front_h + 50 + forwardBackward_h/2 + steadyState * -target_pitch + 1 * remote_H + roll_EH + steadyState * target_roll;
       Y1 = constrainValue(Y1, 70, 150);
-      y2 = right_front_h + 50 + forwardBackward_h/2 - steering + steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
+      y2 = right_front_h + 50 + forwardBackward_h/2 + steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
       y2 = constrainValue(y2, 70, 150);
-      y3 = right_rear_h + 50 - forwardBackward_h/2 + steering - steadyState * -target_pitch + 1 * remote_H + roll_EH +  steadyState * target_roll;
+      y3 = right_rear_h + 50 - forwardBackward_h/2 - steadyState * -target_pitch + 1 * remote_H + roll_EH +  steadyState * target_roll;
       y3 = constrainValue(y3, 70, 150);
-      y4 = left_rear_h + 50 - forwardBackward_h/2 - steering - steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
+      y4 = left_rear_h + 50 - forwardBackward_h/2 - steadyState * -target_pitch + 1 * remote_H - roll_EH - steadyState * target_roll;
       y4 = constrainValue(y4, 70, 150);
     }
     
@@ -729,10 +729,10 @@ void loop()
     mappedValue = 0;
   if (controlmode == 0)
   {
-    motor1target = 0.35 * (forwardBackward + 0.32 * motorStatus.M0Speed) - 1 * steering / 3;//左后
-    motor2target = 0.35 * (forwardBackward +  0.32 * motorStatus.M1Speed) + 1 * steering / 3;//右后
-    sendmotor1target = 0.35 * (forwardBackward + 0.32 * motorStatus.M0Speed) + 1 * steering / 3;//右前
-    sendmotor2target = 0.35 * (forwardBackward +  0.32 * motorStatus.M1Speed) - 1 * steering / 3;//左前
+    motor1target = 0.35 * (forwardBackward + 0.32 * motorStatus.M0Speed) - steering;//左后
+    motor2target = 0.35 * (forwardBackward +  0.32 * motorStatus.M1Speed) + steering;//右后
+    sendmotor1target = 0.35 * (forwardBackward + 0.32 * motorStatus.M0Speed) + steering;//右前
+    sendmotor2target = 0.35 * (forwardBackward +  0.32 * motorStatus.M1Speed) - steering;//左前
     
     sendmotor1target = sendmotor1target;
     sendmotor2target = sendmotor2target;
