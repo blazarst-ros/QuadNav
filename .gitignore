@@ -8,17 +8,40 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .venv/
 venv/
 
 # PlatformIO build output
 .pio/
 
+# CMake and compiler intermediate files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+*.o
+*.obj
+*.d
+*.elf
+*.map
+
+# MATLAB and Simulink generated files
+slprj/
+*.slxc
+*.asv
+
 # Editor and OS temporary files
 *.swp
 *.swo
 *~
 .DS_Store
+Thumbs.db
+desktop.ini
+~$*
+*.tmp
+*.bak
 
 # Local environment secrets
 .env

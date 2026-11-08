@@ -10,6 +10,13 @@
 #include "pid.h"
 
 
+// Jetson UART: GPIO5 TX, GPIO6 RX. UART2 remains dedicated to the motors.
+HardwareSerial jetsonSerial(1);
+constexpr int JETSON_UART_TX = 5;
+constexpr int JETSON_UART_RX = 6;
+constexpr unsigned long JETSON_UART_BAUD = 460800;
+constexpr uint32_t IMU_REPORT_PERIOD_US = 100000;
+
 SF_BLDC motors = SF_BLDC(Serial2);
 SF_BLDC_DATA BLDCData;
 #define myID 0x01
@@ -463,6 +470,7 @@ void setup()
   motionMode = 0;
   steadyState = 0;
   Serial.begin(115200); // 用于调试
+  jetsonSerial.begin(JETSON_UART_BAUD, SERIAL_8N1, JETSON_UART_RX, JETSON_UART_TX);
   
   setRobotparam();
   
@@ -661,6 +669,28 @@ void read(){
   }
 }
 
+// CSV: sample_us,ax_g,ay_g,az_g,gx_deg_s,gy_deg_s,gz_deg_s,temp_c,angle_x_deg,angle_y_deg,angle_z_deg
+// Timestamp is taken immediately after the I2C read; it is not a hardware sample timestamp.
+void reportImu(uint32_t sampleTimeUs)
+{
+  static uint32_t lastReportUs = 0;
+  if (static_cast<uint32_t>(sampleTimeUs - lastReportUs) < IMU_REPORT_PERIOD_US)
+    return;
+  lastReportUs = sampleTimeUs;
+
+  char line[192];
+  const int length = snprintf(line, sizeof(line),
+      "%lu,%.4f,%.4f,%.4f,%.3f,%.3f,%.3f,%.2f,%.2f,%.2f,%.2f\n",
+      static_cast<unsigned long>(sampleTimeUs),
+      mpu6050.getAccX(), mpu6050.getAccY(), mpu6050.getAccZ(),
+      mpu6050.getGyroX(), mpu6050.getGyroY(), mpu6050.getGyroZ(),
+      mpu6050.getTemp(), mpu6050.getAngleX(), mpu6050.getAngleY(), mpu6050.getAngleZ());
+  // Never block the control loop when the UART transmit buffer is full.
+  if (length > 0 && length < static_cast<int>(sizeof(line)) &&
+      jetsonSerial.availableForWrite() >= length)
+    jetsonSerial.write(reinterpret_cast<const uint8_t *>(line), length);
+}
+
 float roll_EH_target=0;
 float roll_EH_rate = 5; // 滚动高度变化速率
 void loop()
@@ -669,6 +699,7 @@ void loop()
   can_control();
 
   mpu6050.update();
+  reportImu(micros());
   remote_mode_switch();
   mode_change();
   pitch = mpu6050.getAngleX()+pitch_off;
