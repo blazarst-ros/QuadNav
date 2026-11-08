@@ -3,6 +3,9 @@
 **/install/
 **/log/
 /camera_ws/Log/
+**/devel/
+.catkin_tools/
+.colcon/
 
 # Python caches and local environments
 __pycache__/
@@ -21,6 +24,9 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 compile_commands.json
+CTestTestfile.cmake
+Testing/
+cmake-build-*/
 *.o
 *.obj
 *.d
@@ -42,6 +48,7 @@ desktop.ini
 ~$*
 *.tmp
 *.bak
+*.log
 
 # Local environment secrets
 .env
@@ -56,6 +63,10 @@ desktop.ini
 *.mcap
 *.pcd
 *.ply
+
+# Local RTAB-Map recordings and generated databases
+/RTAB/datasets/
+/RTAB/maps/
 
 # Keep vendor SDK shared libraries and firmware libraries tracked.
 # Do not ignore *.so or *.a: they are required dependencies here.
