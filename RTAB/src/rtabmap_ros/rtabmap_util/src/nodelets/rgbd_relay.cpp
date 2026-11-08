@@ -1,0 +1,183 @@
+/*
+Copyright (c) 2010-2016, Mathieu Labbe - IntRoLab - Universite de Sherbrooke
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the Universite de Sherbrooke nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+#include "rtabmap_util/rgbd_relay.hpp"
+
+#include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
+#include <sensor_msgs/msg/camera_info.hpp>
+#include <sensor_msgs/image_encodings.hpp>
+
+#ifdef PRE_ROS_IRON
+#include <cv_bridge/cv_bridge.h>
+#else
+#include <cv_bridge/cv_bridge.hpp>
+#endif
+#include <opencv2/highgui/highgui.hpp>
+
+#include "rtabmap_conversions/MsgConversion.h"
+
+#include "rtabmap/core/Compression.h"
+#include "rtabmap/utilite/UConversion.h"
+#include "rtabmap/utilite/ULogger.h"
+
+namespace rtabmap_util
+{
+
+RGBDRelay::RGBDRelay(const rclcpp::NodeOptions & options) :
+	Node("rgbd_relay", options),
+	compress_(false),
+	uncompress_(false),
+	depthCompressionFormat_(".png")
+{
+	int qos = RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT;
+	qos = this->declare_parameter("qos", qos);
+	// The two sides can be set independently so the relay can bridge a publisher
+	// and a subscriber that don't agree on reliability. Both default to qos.
+	int qosSub = this->declare_parameter("qos_sub", qos);
+	int qosPub = this->declare_parameter("qos_pub", qos);
+	int queueSub = this->declare_parameter("queue_sub", 5);
+	int queuePub = this->declare_parameter("queue_pub", 1);
+	compress_ = this->declare_parameter("compress", compress_);
+	uncompress_ = this->declare_parameter("uncompress", uncompress_);
+	imageCompressionFormat_ = this->declare_parameter("image_compression_format", imageCompressionFormat_);
+	if(!rtabmap_conversions::isValidImageCompressionFormat(imageCompressionFormat_))
+	{
+		RCLCPP_ERROR(this->get_logger(), "Invalid image_compression_format \"%s\" (should be \".jpg\" or \".png\"), using \".jpg\".", imageCompressionFormat_.c_str());
+		imageCompressionFormat_ = ".jpg";
+	}
+	depthCompressionFormat_ = this->declare_parameter("depth_compression_format", depthCompressionFormat_);
+	if(!rtabmap_conversions::isValidDepthCompressionFormat(depthCompressionFormat_))
+	{
+		RCLCPP_ERROR(this->get_logger(), "Invalid depth_compression_format \"%s\" (should be \".png\" or \".rvl\", "
+				"optionally followed by \":maxDepth[:quantization]\", optionally prefixed by \"legacy:\", or \"legacy\"), using \".png\".", depthCompressionFormat_.c_str());
+		depthCompressionFormat_ = ".png";
+	}
+
+	UASSERT_MSG(queueSub >= 1 && queuePub >= 1,
+			uFormat("queue_sub (%d) and queue_pub (%d) must be at least 1", queueSub, queuePub).c_str());
+
+	rgbdImageSub_ = create_subscription<rtabmap_msgs::msg::RGBDImage>("rgbd_image", rclcpp::QoS(queueSub).reliability((rmw_qos_reliability_policy_t)qosSub), std::bind(&RGBDRelay::callback, this, std::placeholders::_1));
+	rgbdImagePub_ = create_publisher<rtabmap_msgs::msg::RGBDImage>("rgbd_image_relay", rclcpp::QoS(queuePub).reliability((rmw_qos_reliability_policy_t)qosPub));
+}
+
+void RGBDRelay::callback(const rtabmap_msgs::msg::RGBDImage::SharedPtr input) const
+{
+	if(rgbdImagePub_->get_subscription_count())
+	{
+		if(!compress_ && !uncompress_)
+		{
+			//just republish it
+			rgbdImagePub_->publish(*input);
+			return;
+		}
+
+		auto output = std::make_unique<rtabmap_msgs::msg::RGBDImage>();
+		output->header = input->header;
+		output->rgb_camera_info = input->rgb_camera_info;
+		output->depth_camera_info = input->depth_camera_info;
+		output->key_points = input->key_points;
+		output->points = input->points;
+		output->descriptors = input->descriptors;
+		output->global_descriptor = input->global_descriptor;
+
+		rtabmap::StereoCameraModel stereoModel = rtabmap_conversions::stereoCameraModelFromROS(input->rgb_camera_info, input->depth_camera_info, rtabmap::Transform::getIdentity());
+
+		if(compress_)
+		{
+			if(!input->rgb_compressed.data.empty())
+			{
+				// already compressed, just copy pointer
+				output->rgb_compressed = input->rgb_compressed;
+			}
+			else if(!input->rgb.data.empty())
+			{
+				cv_bridge::CvImageConstPtr rgb = cv_bridge::toCvShare(input->rgb, input);
+				rtabmap_conversions::toCompressedImageMsg(*rgb, imageCompressionFormat_, output->rgb_compressed);
+			}
+
+			if(!input->depth_compressed.data.empty())
+			{
+				// already compressed, just copy pointer
+				output->depth_compressed = input->depth_compressed;
+			}
+			else if(!input->depth.data.empty())
+			{
+				if(stereoModel.isValidForProjection())
+				{
+					// right stereo image
+					cv_bridge::CvImageConstPtr imageRightPtr = cv_bridge::toCvShare(input->depth, input);
+					rtabmap_conversions::toCompressedImageMsg(*imageRightPtr, imageCompressionFormat_, output->depth_compressed);
+				}
+				else
+				{
+					// depth image
+					cv_bridge::CvImageConstPtr imageDepthPtr = cv_bridge::toCvShare(input->depth, input);
+					output->depth_compressed.header = input->depth.header;
+					rtabmap_conversions::compressDepthImage(imageDepthPtr->image, depthCompressionFormat_, output->depth_compressed);
+				}
+			}
+		}
+		if(uncompress_)
+		{
+			if(!input->rgb.data.empty())
+			{
+				// already raw, just copy pointer
+				output->rgb = input->rgb;
+			}
+			else if(!input->rgb_compressed.data.empty())
+			{
+				cv_bridge::toCvCopy(input->rgb_compressed)->toImageMsg(output->rgb);
+			}
+
+			if(!input->depth.data.empty())
+			{
+				// already raw, just copy pointer
+				output->depth = input->depth;
+			}
+			else if(!input->depth_compressed.data.empty())
+			{
+				cv_bridge::CvImagePtr cvImg = rtabmap_conversions::uncompressDepthImage(input->depth_compressed);
+				if(!cvImg->image.empty())
+				{
+					cvImg->toImageMsg(output->depth);
+				}
+			}
+		}
+
+		rgbdImagePub_->publish(std::move(output));
+	}
+}
+
+}
+
+#include "rclcpp_components/register_node_macro.hpp"
+
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable when its library
+// is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(rtabmap_util::RGBDRelay)

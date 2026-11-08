@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rtabmap_demos</name>
+  <version>0.23.13</version>
+  <description>RTAB-Map's demo launch files.</description>
+  <maintainer email="matlabbe@gmail.com">Mathieu Labbe</maintainer>
+  <author>Mathieu Labbe</author>
+  <license>BSD</license>
+  <url type="bugtracker">https://github.com/introlab/rtabmap_ros/issues</url>
+  <url type="repository">https://github.com/introlab/rtabmap_ros</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>rtabmap_odom</exec_depend>
+  <exec_depend>rtabmap_slam</exec_depend>
+  <exec_depend>rtabmap_util</exec_depend>
+  <exec_depend>rtabmap_rviz_plugins</exec_depend>
+  <exec_depend>rtabmap_viz</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>rtabmap_examples</exec_depend>
+  <exec_depend>imu_complementary_filter</exec_depend>
+  <exec_depend>find_object_2d</exec_depend>
+  <!-- scripts/find_object_to_landmarks.py -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>tf2_ros_py</exec_depend>
+  <exec_depend>rtabmap_msgs</exec_depend>
+
+  <test_depend>ament_cmake_pytest</test_depend>
+  <test_depend>ament_index_python</test_depend>
+  <test_depend>rtabmap_launch</test_depend>
+  <test_depend>launch</test_depend>
+  <test_depend>launch_ros</test_depend>
+  <test_depend>python3-pytest</test_depend>
+  <test_depend>python3-yaml</test_depend>
+  <test_depend>python3-numpy</test_depend>
+  <test_depend>python3-scipy</test_depend>
+  <test_depend>rclpy</test_depend>
+  <test_depend>rosbag2_py</test_depend>
+  <test_depend>rosgraph_msgs</test_depend>
+  <test_depend>rosidl_runtime_py</test_depend>
+  <test_depend>rtabmap_msgs</test_depend>
+  
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>

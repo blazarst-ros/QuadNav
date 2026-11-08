@@ -1,0 +1,114 @@
+# rtabmap_demos
+
+Ready-to-run demos of RTAB-Map. Each launch file sets up a complete pipeline for one of the demo bags or one simulated robot, so you can watch RTAB-Map map, close loops and navigate without any hardware. The bags can be downloaded from the [0.23.13 release](https://github.com/introlab/rtabmap_ros/releases/tag/0.23.13).
+
++ [Outdoor Stereo VSLAM](#outdoor-stereo-vslam)
++ [Indoor 2D LiDAR and RGB-D SLAM](#indoor-2d-lidar-and-rgb-d-slam)
++ [Multi-Session Indoor 2D LiDAR and RGB-D SLAM](#multi-session-indoor-2d-lidar-and-rgb-d-slam)
++ [Find-Object with SLAM](#find-object-with-slam)
++ [Netherdrone 3D LiDAR SLAM](#netherdrone-3d-lidar-slam)
++ [Turtlebot4 Nav2, 2D LiDAR and RGB-D SLAM](#turtlebot4-nav2-2d-lidar-and-rgb-d-slam)
++ [Turtlebot3 Nav2 and 2D LiDAR SLAM](#turtlebot3-nav2-and-2d-lidar-slam)
++ [Turtlebot3 Nav2 and RGB-D SLAM](#turtlebot3-nav2-and-rgb-d-slam)
++ [Turtlebot3 Nav2, 2D LiDAR and RGB-D SLAM](#turtlebot3-nav2-2d-lidar-and-rgb-d-slam)
++ [Turtlebot3 Nav2, Fake 2D LiDAR and RGB-D SLAM](#turtlebot3-nav2-fake-2d-lidar-and-rgb-d-slam)
++ [Turtlebot3 Nav2, 2D LiDAR SLAM with FusionCore (IMU + wheel UKF)](#turtlebot3-nav2-2d-lidar-slam-with-fusioncore-imu--wheel-ukf)
++ [Champ Quadruped Nav2, Elevation Map and VSLAM](#champ-quadruped-nav2-elevation-map-and-vslam)
++ [Clearpath Husky Nav2, 2D LiDAR and RGB-D SLAM](#clearpath-husky-nav2-2d-lidar-and-rgb-d-slam)
++ [Clearpath Husky Nav2, 3D LiDAR and RGB-D SLAM](#clearpath-husky-nav2-3d-lidar-and-rgb-d-slam)
++ [Clearpath Husky Nav2, 3D LiDAR Assembling and RGB-D SLAM](#clearpath-husky-nav2-3d-lidar-assembling-and-rgb-d-slam)
++ [Isaac Sim Nav2 and Stereo SLAM](#isaac-sim-nav2-and-stereo-slam)
++ [Isaac Sim Nav2 and RGB-D VSLAM](#isaac-sim-nav2-and-rgb-d-vslam)
+
+### Outdoor Stereo VSLAM
+[stereo_outdoor_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/stereo_outdoor_demo.launch.py) ([Video](https://youtu.be/qpTS7kg9J3A))
+
+![Peek 2024-11-29 10-52](https://github.com/user-attachments/assets/b6dd4a1c-5bd5-4cfa-936d-e8e707bbcb23)
+
+### Indoor 2D LiDAR and RGB-D SLAM
+[robot_mapping_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/robot_mapping_demo.launch.py) (Videos: [rtabmap_viz](https://youtu.be/c0qrEd5rR7M), [rviz](https://youtu.be/MQoSDpAsqps))
+
+![Peek 2024-11-29 11-07](https://github.com/user-attachments/assets/b02beeea-28ed-4fde-932d-c89bef1a046d)
+
+### Multi-Session Indoor 2D LiDAR and RGB-D SLAM
+[multisession_mapping_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/multisession_mapping_demo.launch.py) ([Video](https://youtu.be/XrnyhaxPCro))
+
+![Peek 2024-11-29 11-48](https://github.com/user-attachments/assets/b130e5ab-618f-4c8b-840f-f926b65ab53b)
+
+### Find-Object with SLAM
+[find_object_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/find_object_demo.launch.py) ([Video](https://youtu.be/o1GSQanY-Do))
+
+![Peek 2024-11-29 12-01](https://github.com/user-attachments/assets/b3cc0c67-517a-4f69-b4cc-35d288e96165)
+
+### Netherdrone 3D LiDAR SLAM
+[netherdrone_lidar3d_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/netherdrone_lidar3d_demo.launch.py) ([Video](https://youtu.be/ytsfhMdv9W0))
+
+![Peek 2026-10-10 12-12](https://github.com/user-attachments/assets/a79f0519-6c39-48a4-8c14-799c0775571e)
+
+### Turtlebot4 Nav2, 2D LiDAR and RGB-D SLAM
+[turtlebot4_sim_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/turtlebot4/turtlebot4_sim_demo.launch.py)
+
+![Peek 2024-11-29 12-19](https://github.com/user-attachments/assets/5914e34c-19f1-4b7c-b4df-2e7084946888)
+### Turtlebot3 Nav2 and 2D LiDAR SLAM
+[turtlebot3_sim_scan_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/turtlebot3/turtlebot3_sim_scan_demo.launch.py)
+
+![Peek 2024-11-29 12-23](https://github.com/user-attachments/assets/e3c31c5a-5c46-4370-ad17-38c795db7917)
+### Turtlebot3 Nav2 and RGB-D SLAM
+[turtlebot3_sim_rgbd_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/turtlebot3/turtlebot3_sim_rgbd_demo.launch.py)
+
+![Peek 2024-11-29 14-22](https://github.com/user-attachments/assets/5088be17-0875-42cc-b863-d14468c67f26)
+### Turtlebot3 Nav2, 2D LiDAR and RGB-D SLAM
+[turtlebot3_sim_rgbd_scan_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/turtlebot3/turtlebot3_sim_rgbd_scan_demo.launch.py)
+
+![Peek 2024-11-29 13-41](https://github.com/user-attachments/assets/2e878158-b1b6-48a4-801c-72cdb41b4783)
+### Turtlebot3 Nav2, Fake 2D LiDAR and RGB-D SLAM
+[turtlebot3_sim_rgbd_fake_scan_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/turtlebot3/turtlebot3_sim_rgbd_fake_scan_demo.launch.py)
+
+ * Red: Scan generated from camera's depth.
+ * Orange: Locally assembled scans used for proximity detection.
+ * Yellow: The map.
+
+![Peek 2025-07-04 16-57](https://github.com/user-attachments/assets/8869cf57-35a1-4236-bdab-151b88ae2ea1)
+### Turtlebot3 Nav2, 2D LiDAR SLAM with FusionCore (IMU + wheel UKF)
+[turtlebot3_sim_fusioncore_icp_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/turtlebot3/fusioncore/turtlebot3_sim_fusioncore_icp_demo.launch.py) (Jazzy + Gazebo Harmonic)
+
+FusionCore (wheel + IMU UKF) and `icp_odometry` run in a feedback loop: FusionCore's stable `odom` frame seeds scan matching via `guess_frame_id`, and the ICP result feeds back into FusionCore as a second velocity source. See [README](launch/turtlebot3/fusioncore/README.md) for architecture details.
+
+![FusionCore icp_odometry demo](https://github.com/user-attachments/assets/e1e07cfb-74e0-48b9-9bfd-32b68ee5a6ef)
+### Champ Quadruped Nav2, Elevation Map and VSLAM
+[champ_sim_vslam.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/champ/champ_sim_vslam.launch.py)
+
+![Peek 2024-11-29 15-00](https://github.com/user-attachments/assets/d1a27c78-27bc-4901-82a7-59b5d24e6454)
+### Clearpath Husky Nav2, 2D LiDAR and RGB-D SLAM
+[husky_sim_scan2d_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/husky/husky_sim_scan2d_demo.launch.py)
+
+![Peek 2024-11-29 15-30](https://github.com/user-attachments/assets/c8f79b86-253e-4c8e-ac7a-c26584f43fa4)
+### Clearpath Husky Nav2, 3D LiDAR and RGB-D SLAM
+[husky_sim_scan3d_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/husky/husky_sim_scan3d_demo.launch.py)
+
+![Peek 2024-11-29 15-36](https://github.com/user-attachments/assets/a4b6e6ae-38ed-44da-bbfb-d3c30a301f9c)
+### Clearpath Husky Nav2, 3D LiDAR Assembling and RGB-D SLAM
+[husky_sim_scan3d_assemble_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/husky/husky_sim_scan3d_assemble_demo.launch.py)
+
+![Peek 2024-11-29 16-16](https://github.com/user-attachments/assets/b2235bd2-33d2-4c44-b6e9-9923a524632b)
+### Isaac Sim Nav2 and Stereo SLAM
+[isaac_sim_vslam_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/isaac/isaac_sim_vslam_demo.launch.py)
+
+![Peek 2024-11-29 17-49](https://github.com/user-attachments/assets/54cd0c82-aaed-47e5-911a-f286b6d2cc17)
+### Isaac Sim Nav2 and RGB-D VSLAM
+[isaac_sim_vslam_demo.launch.py](https://github.com/introlab/rtabmap_ros/blob/ros2/rtabmap_demos/launch/isaac/isaac_sim_vslam_demo.launch.py) stereo:=false vo:=rtabmap
+
+![Peek 2024-11-30 13-22](https://github.com/user-attachments/assets/240820c6-4dea-4cbf-9431-b4b3af695d51)
+
+## Tests
+
+`colcon test --packages-select rtabmap_demos` runs two tests:
+
+* `test_launch_files` loads every launch file of this package, with its default arguments and with each of its switches flipped, without starting anything. It checks that the files, executables, components and included launch files exist, that the arguments passed to our own launch files are declared, and that RTAB-Map's parameters exist in the installed library. Packages that are not installed (simulators, robots) are stubbed and named in a warning.
+* `test_demo_playback` replays demo bags through the demo launch files and compares the resulting graphs with the golden ones in `test/golden` (number of nodes and of loop closures, and the trajectory error rtabmap computes against the golden trajectory, replayed as ground truth). It is skipped unless the bags were downloaded first (a few GB):
+
+```bash
+rtabmap_demos/test/fetch_test_data.sh   # or set RTABMAP_DEMOS_TEST_DATA to download elsewhere
+```
+
+The bags are replayed in lockstep with the demo's nodes: each sensor message is published only once every node is idle, so results do not depend on how loaded the machine is. A replay takes a few minutes per bag. To keep a run's graph, database and log, set `RTABMAP_DEMOS_TEST_RESULTS` to a directory. After a change that is expected to change the results, regenerate the golden graphs with `RTABMAP_DEMOS_UPDATE_GOLDEN=1` and commit them.

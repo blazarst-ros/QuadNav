@@ -4,6 +4,8 @@
 **/log/
 /camera_ws/Log/
 **/devel/
+**/build-*/
+**/build_*/
 .catkin_tools/
 .colcon/
 
@@ -13,6 +15,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.cache/
 .venv/
 venv/
 
@@ -32,6 +35,13 @@ cmake-build-*/
 *.d
 *.elf
 *.map
+.ninja_deps
+.ninja_log
+*.gcda
+*.gcno
+*.gcov
+.coverage
+htmlcov/
 
 # MATLAB and Simulink generated files
 slprj/
@@ -57,6 +67,10 @@ desktop.ini
 
 # Recorded sensor data and generated maps
 *.bag
+*.bag.active
+*.db
+*.db-shm
+*.db-wal
 *.db3
 *.db3-shm
 *.db3-wal
@@ -67,6 +81,14 @@ desktop.ini
 # Local RTAB-Map recordings and generated databases
 /RTAB/datasets/
 /RTAB/maps/
+
+# Keep the upstream odometry regression fixture, not runtime recordings.
+!/RTAB/src/rtabmap_ros/rtabmap_odom/test/data/lidar/ouster_half_turn/ouster_half_turn.mcap
+
+# Local agent and account configuration
+/.agents/
+/.codex/
+/.aws/
 
 # Keep vendor SDK shared libraries and firmware libraries tracked.
 # Do not ignore *.so or *.a: they are required dependencies here.

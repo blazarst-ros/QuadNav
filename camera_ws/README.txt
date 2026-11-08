@@ -17,16 +17,20 @@ source结构如下：
 
 Terminator 1:
 
-source /opt/ros/humble/setup.bash
-source /nest/quadNav/camera_ws/install/setup.bash
+cd Workstation/quadNav/camera_ws
+
+source /nest/quadNav/setup_vision.bash
 export ROS_DOMAIN_ID=99
+
 
 ros2 launch orbbec_camera gemini.launch.xml \
   enable_color:=true \
   enable_depth:=true \
-  enable_ir:=true \
-  enable_point_cloud:=true\
-  enable_colored_point_cloud:=false
+  enable_ir:=false\
+  enable_point_cloud:=false\
+  enable_colored_point_cloud:=false\
+  depth_registration:=true\
+  tf_publish_rate:=0.0
   
   
   
@@ -39,3 +43,7 @@ export ROS_DOMAIN_ID=99
 
 #ros2 topic list -t
 rviz2
+
+
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"

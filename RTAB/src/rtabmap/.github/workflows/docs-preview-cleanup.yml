@@ -1,0 +1,68 @@
+name: Documentation preview cleanup
+
+# Removes the per-PR documentation preview published by docs.yml under
+# gh-pages:preview/pr-<number>/ once the pull request is closed (merged or not).
+#
+# Deliberately has no `paths` filter: docs.yml only publishes a preview when
+# documentation-related files changed, but this must fire for every close so a
+# preview can never be orphaned on the branch.
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    name: Remove PR preview
+    # Forks never get a preview (their token is read-only), so nothing to clean.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+
+    # Same group as docs.yml's runs for this pull request (its workflow name
+    # and PR number), so a preview still being published is removed after it
+    # lands rather than recreated after the cleanup. Not shared with other PRs:
+    # GitHub cancels a pending job when a newer one joins its group, which
+    # would orphan the preview.
+    concurrency:
+      group: Documentation-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 1
+
+      # Other workflows may push to gh-pages at the same time: on a rejected
+      # push, start again from the new head (see docs.yml's Publish step).
+      - name: Remove preview directory
+        env:
+          PREVIEW_DIR: preview/pr-${{ github.event.number }}
+        run: |
+          set -eux
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch --depth 1 origin gh-pages
+            git reset --hard FETCH_HEAD
+            if [[ ! -d "${PREVIEW_DIR}" ]]; then
+              echo "No preview at ${PREVIEW_DIR}, nothing to do."
+              exit 0
+            fi
+            git rm -r --quiet "${PREVIEW_DIR}"
+            # Drop the parent too once the last preview is gone.
+            rmdir preview 2>/dev/null || true
+            git commit --quiet -m "Remove preview for PR #${{ github.event.number }}"
+            if git push origin HEAD:gh-pages; then
+              exit 0
+            fi
+            sleep $((attempt * 5 + RANDOM % 10))
+          done
+          echo "Could not push to gh-pages after ${attempt} attempts."
+          exit 1

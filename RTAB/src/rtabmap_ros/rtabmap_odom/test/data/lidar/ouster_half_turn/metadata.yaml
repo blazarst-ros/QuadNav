@@ -1,0 +1,62 @@
+rosbag2_bagfile_information:
+  version: 5
+  storage_identifier: mcap
+  duration:
+    nanoseconds: 5066021600
+  starting_time:
+    nanoseconds_since_epoch: 1613418430206475184
+  message_count: 244
+  topics_with_message_count:
+    - topic_metadata:
+        name: /tf
+        type: tf2_msgs/msg/TFMessage
+        serialization_format: cdr
+        offered_qos_profiles: "- avoid_ros_namespace_conventions: false\n  deadline: {nsec: 0, sec: 0}\n  depth: 10\n  durability: 2\n  history: 1\n  lifespan: {nsec: 0, sec: 0}\n  liveliness: 1\n  liveliness_lease_duration: {nsec: 0, sec: 0}\n  reliability: 1"
+      message_count: 116
+    - topic_metadata:
+        name: /tf_static
+        type: tf2_msgs/msg/TFMessage
+        serialization_format: cdr
+        offered_qos_profiles: "- avoid_ros_namespace_conventions: false\n  deadline: {nsec: 0, sec: 0}\n  depth: 10\n  durability: 1\n  history: 1\n  lifespan: {nsec: 0, sec: 0}\n  liveliness: 1\n  liveliness_lease_duration: {nsec: 0, sec: 0}\n  reliability: 1"
+      message_count: 2
+    - topic_metadata:
+        name: /os_cloud_node/points
+        type: sensor_msgs/msg/PointCloud2
+        serialization_format: cdr
+        offered_qos_profiles: "- avoid_ros_namespace_conventions: false\n  deadline: {nsec: 0, sec: 0}\n  depth: 10\n  durability: 2\n  history: 1\n  lifespan: {nsec: 0, sec: 0}\n  liveliness: 1\n  liveliness_lease_duration: {nsec: 0, sec: 0}\n  reliability: 1"
+      message_count: 2
+    - topic_metadata:
+        name: /os_cloud_node/imu/data_raw
+        type: sensor_msgs/msg/Imu
+        serialization_format: cdr
+        offered_qos_profiles: "- avoid_ros_namespace_conventions: false\n  deadline: {nsec: 0, sec: 0}\n  depth: 10\n  durability: 2\n  history: 1\n  lifespan: {nsec: 0, sec: 0}\n  liveliness: 1\n  liveliness_lease_duration: {nsec: 0, sec: 0}\n  reliability: 1"
+      message_count: 29
+    - topic_metadata:
+        name: /os_cloud_node/imu/data_filtered
+        type: sensor_msgs/msg/Imu
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 1\n  depth: 5\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 29
+    - topic_metadata:
+        name: /imu/data_raw
+        type: sensor_msgs/msg/Imu
+        serialization_format: cdr
+        offered_qos_profiles: "- avoid_ros_namespace_conventions: false\n  deadline: {nsec: 0, sec: 0}\n  depth: 10\n  durability: 2\n  history: 1\n  lifespan: {nsec: 0, sec: 0}\n  liveliness: 1\n  liveliness_lease_duration: {nsec: 0, sec: 0}\n  reliability: 1"
+      message_count: 33
+    - topic_metadata:
+        name: /imu/data_filtered
+        type: sensor_msgs/msg/Imu
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 1\n  depth: 5\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 33
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - ouster_half_turn.mcap
+  files:
+    - path: ouster_half_turn.mcap
+      starting_time:
+        nanoseconds_since_epoch: 1613418430206475184
+      duration:
+        nanoseconds: 5066021600
+      message_count: 244

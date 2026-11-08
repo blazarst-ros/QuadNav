@@ -633,6 +633,9 @@ void OBCameraNode::onNewFrameCallback(const std::shared_ptr<ob::Frame>& frame,
   auto& distortion =
       stream_index == COLOR ? camera_param_->rgbDistortion : camera_param_->depthDistortion;
   auto camera_info = convertToCameraInfo(intrinsic, distortion, width);
+  camera_info.header.stamp = timestamp;
+  camera_info.header.frame_id =
+      depth_registration_ ? optical_frame_id_[COLOR] : optical_frame_id_[stream_index];
   CHECK(camera_info_publishers_.count(stream_index) > 0);
   camera_info_publishers_[stream_index]->publish(camera_info);
   auto image_msg =
@@ -641,7 +644,7 @@ void OBCameraNode::onNewFrameCallback(const std::shared_ptr<ob::Frame>& frame,
   image_msg->is_bigendian = false;
   image_msg->step = width * unit_step_size_[stream_index];
   image_msg->header.frame_id =
-      depth_registration_ ? depth_aligned_frame_id_[stream_index] : optical_frame_id_[stream_index];
+      depth_registration_ ? optical_frame_id_[COLOR] : optical_frame_id_[stream_index];
   CHECK(image_publishers_.count(stream_index) > 0);
   image_publishers_[stream_index].publish(image_msg);
   auto hardware_timestamp = frame->timeStamp();
@@ -789,7 +792,6 @@ void OBCameraNode::calcAndPublishStaticTransform() {
   rclcpp::Time tf_timestamp = node_->now();
 
   publishStaticTF(tf_timestamp, trans, Q, frame_id_[DEPTH], frame_id_[COLOR]);
-  publishStaticTF(tf_timestamp, trans, Q, camera_link_frame_id_, frame_id_[COLOR]);
   publishStaticTF(tf_timestamp, zero_trans, quaternion_optical, frame_id_[COLOR],
                   optical_frame_id_[COLOR]);
   publishStaticTF(tf_timestamp, zero_trans, quaternion_optical, frame_id_[DEPTH],
